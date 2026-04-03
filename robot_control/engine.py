@@ -45,22 +45,33 @@ class RobotNode:
         self.ip = ip
         self.pose = []
         self.connected = False
+        # If IP is local, we treat it as a Virtual Robot (No socket attempt)
+        self.is_virtual = (ip == "127.0.0.1")
 
     def run(self):
-        while True:
-            try:
-                # Setup RTDE Interfaces
-                rtde_r = RTDEReceiveInterface(self.ip)
-                self.connected = True
-                print(f"[ROBOT {self.node_id}] Connected to {self.ip}")
-                
-                while True:
-                    self.pose = rtde_r.getActualTCPPose()
-                    time.sleep(0.05) # 20Hz for smoother HMI tracking
-            except Exception as e:
-                self.connected = False
-                print(f"[ROBOT {self.node_id} ERROR] {e}. Retrying...")
-                time.sleep(5)
+        if self.is_virtual:
+            print(f"[ROBOT {self.node_id}] Starting VIRTUAL MODE (No Network)")
+            self.connected = True # Force connected to True for the HMI
+            import random
+            while True:
+                # Just move the Z-axis slightly so we see life on the HMI
+                self.pose[2] = 0.5 + (random.random() * 0.005)
+                time.sleep(0.5)
+        else:
+            # ONLY try to connect if it's a real Lab IP
+            print(f"[ROBOT {self.node_id}] Attempting REAL connection to {self.ip}...")
+            while True:
+                try:
+                    from rtde_receive import RTDEReceiveInterface
+                    rtde_r = RTDEReceiveInterface(self.ip)
+                    self.connected = True
+                    while True:
+                        self.pose = rtde_r.getActualTCPPose()
+                        time.sleep(0.05)
+                except Exception as e:
+                    self.connected = False
+                    print(f"[ROBOT {self.node_id}] Offline. Retrying {self.ip}...")
+                    time.sleep(10) # Wait longer between retries to keep terminal clean
 
 class SystemManager:
     """The 'Brain' that coordinates the threads using Environment Variables."""
