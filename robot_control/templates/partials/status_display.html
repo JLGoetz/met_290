@@ -12,7 +12,7 @@
     <div class="card">
         <h4>Robot {{ id }}</h4>
         <p>Status: {% if node.connected %}Online{% else %}Searching...{% endif %}</p>
-        <p>Z-Pos: {{ node.pose.2|default:"0.000"|floatformat:3 }}</p>
+        <p>Z-Pos: {{ node.pose.z|floatformat:3 }}</p>
     </div>
     {% endfor %}
 </div>

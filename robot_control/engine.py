@@ -55,7 +55,15 @@ class RobotNode:
             import random
             while True:
                 # Just move the Z-axis slightly so we see life on the HMI
-                self.pose[2] = 0.5 + (random.random() * 0.005)
+                # Inside the Virtual Mode loop:
+                self.pose = {
+                    'x': 0.0,
+                    'y': 0.0,
+                    'z': 0.5 + (random.random() * 0.005),
+                    'rx': 0.0,
+                    'ry': 0.0,
+                    'rz': 0.0
+                }
                 time.sleep(0.5)
         else:
             # ONLY try to connect if it's a real Lab IP
@@ -66,7 +74,15 @@ class RobotNode:
                     rtde_r = RTDEReceiveInterface(self.ip)
                     self.connected = True
                     while True:
-                        self.pose = rtde_r.getActualTCPPose()
+                        actual_pose = rtde_r.getActualTCPPose()
+                        self.pose = {
+                            'x': actual_pose[0],
+                            'y': actual_pose[1],
+                            'z': actual_pose[2],
+                            'rx': actual_pose[3],
+                            'ry': actual_pose[4],
+                            'rz': actual_pose[5]
+                        }
                         time.sleep(0.05)
                 except Exception as e:
                     self.connected = False
