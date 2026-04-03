@@ -1,0 +1,7 @@
+asgiref==3.11.1
+Django==6.0.3
+django-htmx==1.27.0
+pycomm3==1.2.16
+sqlparse==0.5.5
+tzdata==2025.3
+ur_rtde==1.6.3
