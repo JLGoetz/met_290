@@ -1,0 +1,18 @@
+<div class="card">
+    <h3>PLC Status: 
+        <span class="{% if plc_connected %}online{% else %}offline{% endif %}">
+            {% if plc_connected %}CONNECTED{% else %}DISCONNECTED{% endif %}
+        </span>
+    </h3>
+    <p>Master Enable: {{ plc.Master_Enable }}</p>
+</div>
+
+<div style="display: flex;">
+    {% for id, node in nodes.items %}
+    <div class="card">
+        <h4>Robot {{ id }}</h4>
+        <p>Status: {% if node.connected %}Online{% else %}Searching...{% endif %}</p>
+        <p>Z-Pos: {{ node.pose.2|floatformat:3 }}</p>
+    </div>
+    {% endfor %}
+</div>
