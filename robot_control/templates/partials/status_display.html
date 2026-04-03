@@ -10,8 +10,19 @@
 <div style="display: flex;">
     {% for id, node in nodes.items %}
     <div class="card">
-        <h4>Robot {{ id }}</h4>
-        <p>Status: {% if node.connected %}Online{% else %}Searching...{% endif %}</p>
+        <h4>Node {{ id }}</h4>
+        <p>Hardware State: <strong>{{ node.status }}</strong></p>
+
+        {% if "POWER_OFF" in node.status %}
+            <button hx-post="/toggle-power/{{ id }}/" style="background: orange;">⚡ POWER ON</button>
+        {% elif "POWER_ON" in node.status %}
+            <button hx-post="/toggle-power/{{ id }}/" style="background: yellow;">🔓 RELEASE BRAKES</button>
+        {% elif "IDLE" in node.status or "RUNNING" in node.status %}
+            <button hx-post="/move-home/{{ id }}/" style="background: green; color: white;">🏠 MOVE TO HOME</button>
+            <button hx-post="/toggle-power/{{ id }}/" style="background: red;">🛑 POWER DOWN</button>
+        {% else %}
+            <p>Connecting to Controller...</p>
+        {% endif %}
         <p>Z-Pos: {{ node.pose.z|floatformat:3 }}</p>
     </div>
     {% endfor %}

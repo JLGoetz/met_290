@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from rtde_receive import RTDEReceiveInterface
 from rtde_control import RTDEControlInterface
-from dashboard_client import DashboardClient
+from d_client import DashboardClient
 
 load_dotenv()
 
