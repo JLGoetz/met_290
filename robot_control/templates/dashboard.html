@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MET_250 4-Node Cluster</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        .online { color: green; font-weight: bold; }
+        .offline { color: red; font-weight: bold; }
+        .card { border: 1px solid #ccc; padding: 10px; margin: 10px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>System Dashboard</h1>
+
+    <div hx-get="/update-status/" hx-trigger="every 500ms">
+        <p>Initializing connection to PLC and Nodes...</p>
+    </div>
+</body>
+</html>
