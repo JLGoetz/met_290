@@ -46,7 +46,8 @@ class RobotNode:
         self.pose = []
         self.connected = False
         # If IP is local, we treat it as a Virtual Robot (No socket attempt)
-        self.is_virtual = (ip == "127.0.0.1")
+        # Ensure this line isn't accidentally hardcoded to True
+        self.is_virtual = (ip == "127.0.0.1" or ip is None)
 
     def run(self):
         if self.is_virtual:
