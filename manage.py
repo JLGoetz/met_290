@@ -2,11 +2,25 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+import logging
 
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'met_290.settings')
+    
+    # --- BLOCK TO KILL LOG SPAM ---
+    if 'runserver' in sys.argv:
+        # 1. Mute standard logging
+        logging.getLogger('django.server').setLevel(logging.CRITICAL)
+        
+        # 2. Monkeypatch the runserver command to stop printing GET/POST 200s
+        try:
+            from django.core.management.commands.runserver import Command as RunserverCommand
+            RunserverCommand.log_message = lambda *args, **kwargs: None
+        except ImportError:
+            pass 
+    # ------------------------------
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -16,7 +30,6 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-
 
 if __name__ == '__main__':
     main()
